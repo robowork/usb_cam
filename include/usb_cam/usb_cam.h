@@ -37,9 +37,9 @@
 #define USB_CAM_USB_CAM_H
 
 #include <asm/types.h>          /* for videodev2.h */
-
 extern "C"
 {
+#include <libavutil/log.h>
 #include <linux/videodev2.h>
 #include <libavcodec/avcodec.h>
 #include <libswscale/swscale.h>

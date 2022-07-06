@@ -375,6 +375,11 @@ int UsbCam::init_mjpeg_decoder(int image_width, int image_height)
   }
 
   avcodec_context_ = avcodec_alloc_context3(avcodec_);
+  
+  // Suppress warnings of the following form:
+  // [swscaler @ 0x############] deprecated pixel format used, make sure you did set range correctly
+  av_log_set_level(AV_LOG_QUIET);
+  
 #if LIBAVCODEC_VERSION_MAJOR < 55
   avframe_camera_ = avcodec_alloc_frame();
   avframe_rgb_ = avcodec_alloc_frame();
