@@ -14,5 +14,5 @@
     <param name="autosize" value="true" />
   </node> -->
   <node name="rosbag_record_cam" pkg="rosbag" type="record"
-        args="record -a --split --size 1024 -b 2048 -o /mnt/ssd/data/spot/spinel_hd_1920x1080_30fps"  output="screen" respawn="true"/>
+        args="record -a --split --size 1024 -b 2048 -o /mnt/ssd/data/spot/elp_1920_1080_30fps"  output="screen" respawn="true"/>
 </launch>
