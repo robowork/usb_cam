@@ -77,11 +77,11 @@ namespace usb_cam {
     node_.param("camera_name", camera_name_, std::string("head_camera"));
     node_.param("camera_info_url", camera_info_url_, std::string(""));
     cinfo_.reset(new camera_info_manager::CameraInfoManager(node_, camera_name_, camera_info_url_));
-
+    node_.param("sample_rate", sample_rate_, 1.0);
     // create Services
     service_start_ = node_.advertiseService("start_capture", &UsbCamNode::service_start_cap, this);
     service_stop_ = node_.advertiseService("stop_capture", &UsbCamNode::service_stop_cap, this);
-
+    img_counter_ = 0;
     // check for default camera info
     if (!cinfo_->isCalibrated())
     {
@@ -181,19 +181,39 @@ namespace usb_cam {
     }
   }
 
+  // bool UsbCamNode::take_and_send_image()
+  // {
+  //   // grab the image
+  //   cam_.grab_image(&img_);
+
+  //   // grab the camera info
+  //   sensor_msgs::CameraInfoPtr ci(new sensor_msgs::CameraInfo(cinfo_->getCameraInfo()));
+  //   ci->header.frame_id = img_.header.frame_id;
+  //   ci->header.stamp = img_.header.stamp;
+
+  //   // publish the image
+  //   image_pub_.publish(img_, *ci);
+
+  //   return true;
+  // }
+
   bool UsbCamNode::take_and_send_image()
   {
     // grab the image
     cam_.grab_image(&img_);
-
+    img_counter_++;
     // grab the camera info
     sensor_msgs::CameraInfoPtr ci(new sensor_msgs::CameraInfo(cinfo_->getCameraInfo()));
     ci->header.frame_id = img_.header.frame_id;
     ci->header.stamp = img_.header.stamp;
 
     // publish the image
-    image_pub_.publish(img_, *ci);
 
+    if (img_counter_ >= sample_rate_)
+    { 
+      image_pub_.publish(img_, *ci);
+      img_counter_ = 0;
+    }
     return true;
   }
 
